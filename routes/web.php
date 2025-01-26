@@ -14,6 +14,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Event\TestData\TestData;
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
 
 Route::get('/', function () {
     // return view('welcome');
@@ -214,7 +228,7 @@ Route::post('/procase-submit', function (Request $request) {
     }
 
     // บันทึกข้อมูลในฐานข้อมูล
-    Product::create($data);
+    procasedata::create($data);
 
-    return redirect()->route('product.index')->with('success', 'เพิ่มสินค้าเรียบร้อยแล้ว!');
+    return redirect()->route('procasedata.index')->with('success', 'เพิ่มสินค้าเรียบร้อยแล้ว!');
 })->name('procase.submit');
